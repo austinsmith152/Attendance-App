@@ -1,0 +1,75 @@
+//
+//  ViewController.swift
+//  First Baptist Church
+//
+//  Created by Austin Smith on 2/25/21.
+//
+
+import UIKit
+
+class ViewController: UIViewController {
+    
+    @IBOutlet weak var NameField: UITextField!
+    @IBOutlet weak var NameLField: UITextField!
+    @IBOutlet weak var ClassField: UITextField!
+    
+    let classes = ["Nursey", "PreSchool", "K-2", "3-4", "5-6", "Youth", "College&Career", "ClassofRuth", "SoulMates", "Pairs&Spaces", "Volunteers"]
+    
+    var pickerView = UIPickerView()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        //Do any additional setup after loading the view, typically from a nib.
+        
+        NameField.textAlignment = .center
+        NameLField.textAlignment = .center
+        
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        
+        ClassField.inputView = pickerView
+        ClassField.textAlignment = .center
+        ClassField.placeholder = "Select Class"
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        //Dispose of any resources that can be recreated.
+        
+        NameField.delegate = self
+        NameLField.delegate = self
+        
+    }
+    
+    @IBAction func Submit(_ sender: Any) {
+        
+        UIApplication.shared.open(URL(string:"http://localhost:4567/add?fName=\(NameField.text!)&lName=\(NameLField.text!)&className=\(ClassField.text!)")! as URL, options: [:],completionHandler: nil)
+        
+    }
+}
+
+extension ViewController : UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        NameField.resignFirstResponder()
+        return true
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return classes.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return classes[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        ClassField.text = classes[row]
+        ClassField.resignFirstResponder()
+    }
+    
+}
