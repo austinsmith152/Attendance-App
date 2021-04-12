@@ -1,0 +1,44 @@
+package com.attendance.app;
+
+import static spark.Spark.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+/**
+ * A simple server
+ *
+ */
+public class App 
+{
+    private static int attendance_so_far = 0;
+    private static ArrayList<String> attendees = new ArrayList();
+
+    public static void main( String[] args )
+    {
+        get("/info", (request, response) -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Current attendance is " + attendance_so_far + "<br>");
+
+            Iterator<String> i = attendees.iterator();
+            while(i.hasNext()) {
+                sb.append(i.next() + "<br>");
+            }
+
+            return sb;
+
+        });
+
+        get("/add", (request, response) -> {
+            String fName = request.queryParams("fName");
+            String lName = request.queryParams("lName");
+            String className = request.queryParams("className");
+
+            attendees.add(fName + ' ' + lName + ' ' + className);
+
+            attendance_so_far++;
+
+            return fName + " has been added to attendance list. (" + attendance_so_far + ")";
+        });
+    }
+}
