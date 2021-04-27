@@ -13,7 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var NameLField: UITextField!
     @IBOutlet weak var ClassField: UITextField!
     
-    let classes = ["Nursey", "PreSchool", "K-2", "3-4", "5-6", "Youth", "College&Career", "ClassofRuth", "SoulMates", "Pairs&Spaces", "Volunteers"]
+    //The options for the pickerview
+    let classes = ["Nursery", "PreSchool", "K-2", "3-4", "5-6", "Youth", "College&Career", "ClassofRuth", "SoulMates", "Pairs&Spaces", "Volunteers"]
     
     var pickerView = UIPickerView()
     
@@ -43,15 +44,22 @@ class ViewController: UIViewController {
     
     @IBAction func Submit(_ sender: Any) {
         
-        UIApplication.shared.open(URL(string:"http://localhost:4567/add?fName=\(NameField.text!)&lName=\(NameLField.text!)&className=\(ClassField.text!)")! as URL, options: [:],completionHandler: nil)
+        //Using the IP Address to send the attendance
+        UIApplication.shared.open(URL(string:"http://10.26.200.231:4567/add?fName=\(NameField.text!)&lName=\(NameLField.text!)&className=\(ClassField.text!)")! as URL, options: [:],completionHandler: nil)
         
     }
 }
 
 extension ViewController : UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
+    //Makes it where when you click off the keyboard goes away
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         NameField.resignFirstResponder()
+        NameLField.resignFirstResponder()
         return true
     }
     
@@ -71,5 +79,4 @@ extension ViewController : UITextFieldDelegate, UIPickerViewDelegate, UIPickerVi
         ClassField.text = classes[row]
         ClassField.resignFirstResponder()
     }
-    
 }
