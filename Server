@@ -16,29 +16,59 @@ public class App
 
     public static void main( String[] args )
     {
+
+        //Displays the list of names 
         get("/info", (request, response) -> {
             StringBuilder sb = new StringBuilder();
-            sb.append("Current attendance is " + attendance_so_far + "<br>");
+            sb.append("<!doctype html><html><head><style>* { font-size: 30px; }</style></head><body>");
+
+            sb.append("Current attendance is " + attendance_so_far + "&nbsp;");
+            sb.append("<a href=\"export\"><button>Export</button></a><br>");
+
+            sb.append("<br>Name, Class<br>");
 
             Iterator<String> i = attendees.iterator();
             while(i.hasNext()) {
                 sb.append(i.next() + "<br>");
             }
 
+            sb.append("</body></html>");
+
             return sb;
 
         });
 
+        //Is what makes it into a document to save
+        get("/export", (request, response) -> {
+            StringBuilder sb = new StringBuilder();
+            int index = 1;
+
+            Iterator<String> i = attendees.iterator();
+            sb.append("Number, Name, Class\n");
+            while(i.hasNext()) {
+                sb.append(Integer.toString(index) + "," + i.next() + "\n");
+                index++;
+            }
+
+            //these two lines are what makes the file download
+            response.type("text/csv");
+            response.header("Content-Disposition", "attachment; filename=attendancelisting.csv");
+            
+            return sb;
+
+        });
+
+        //how the names are add
         get("/add", (request, response) -> {
             String fName = request.queryParams("fName");
             String lName = request.queryParams("lName");
             String className = request.queryParams("className");
 
-            attendees.add(fName + ' ' + lName + ' ' + className);
+            attendees.add(fName + " " + lName + ", " + className);
 
             attendance_so_far++;
 
-            return fName + " has been added to attendance list. (" + attendance_so_far + ")";
+            return ("<!doctype html><html><head><style>* { font-size: 50px; }</style></head><body>" + fName + " has been added to attendance list.</body></html>");
         });
     }
 }
